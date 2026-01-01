@@ -7,9 +7,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;  // ✅
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -32,8 +35,16 @@ public class Course {
         this.title = title;
         this.code = code;
     }
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
+    @JsonIgnore
+    private Teacher teacher;
 
-    // Геттеры и сеттеры
+    
+    public Teacher getTeacher() { return teacher; }
+    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -45,7 +56,7 @@ public class Course {
 
     public List<Enrollment> getEnrollments() { return enrollments; }
     public void setEnrollments(List<Enrollment> enrollments) { this.enrollments = enrollments; }
-
+    
     public void addEnrollment(Enrollment enrollment) {
         enrollments.add(enrollment);
         enrollment.setCourse(this);
